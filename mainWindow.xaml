@@ -1,0 +1,75 @@
+<Window
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Apex"
+        xmlns:Wpf="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf" x:Class="Apex.MainWindow"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="1080" Width="1920">
+    <Grid x:Name="MainGrid"  HorizontalAlignment="Left">
+        <Grid.Background>
+            <ImageBrush ImageSource="/nav.png"/>
+        </Grid.Background>
+        <!--Parte de cima-->
+        <Rectangle HorizontalAlignment="Center" Height="31" Margin="0,31,0,0" VerticalAlignment="Top" Width="1920" Fill="#FFDDDDDD"/>
+
+        <Grid Height="41" VerticalAlignment="Top" Background="#FFDDDDDD">
+            <Grid HorizontalAlignment="Left" Height="41" VerticalAlignment="Center" Width="237" Background="#3fffffff">
+                <Rectangle HorizontalAlignment="Left" Height="35" Margin="5,0,0,0" Stroke="Transparent" Fill="#ffffff" VerticalAlignment="Center" Width="222" RadiusX="7.49" RadiusY="7.49"/>
+
+            </Grid>
+
+            <!--Dock-->
+            <Grid x:Name="Pages" HorizontalAlignment="Stretch" Height="41" Margin="237,0,0,0" VerticalAlignment="Top" Width="1683" Background="#3FFFFFFF">
+
+
+
+                <Rectangle x:Name="AddButtonBackgroundPanel" Height="35" Width="35" RadiusX="17.5" RadiusY="17.5" Fill="White" Margin="5,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                <Button x:Name="AddButton" BorderBrush="Transparent" Background="Transparent" Content="+" HorizontalAlignment="Left" Height="37" Margin="5,0,0,0" VerticalAlignment="Center" Width="37" Click="AddNewPage"/>
+            </Grid>
+        </Grid>
+
+
+        <Grid x:Name="ActualPageController" HorizontalAlignment="Stretch" Height="43" Margin="0,41,0,0" VerticalAlignment="Top" Width="1920" Background="#ffffff">
+
+
+
+
+
+
+
+            <Grid Margin="-9,0,0,0">
+                <Rectangle HorizontalAlignment="Left" x:Name="GrayPageElement" Height="34" Margin="87,0,0,0" VerticalAlignment="Center" RadiusX="4.973" RadiusY="4.973" Fill="#FFDDDDDD" Width="1092"/>
+                <Grid Height="32" Margin="215,0,841,0" VerticalAlignment="Center">
+
+                    <Rectangle HorizontalAlignment="Stretch" Name="AdressBackPanel" Stroke="Transparent" Fill="White" RadiusX="8.44" RadiusY="8.44" Margin="0,3,0,3"/>
+                    <TextBlock x:Name="httpBlock" HorizontalAlignment="Left" Height="20" Margin="11,0,0,0" TextWrapping="Wrap" Text="https://" VerticalAlignment="Center" Width="97" Foreground="#FF414141" Padding="0,1,0,0"/>
+                    <TextBox Text="" TextChanged="AdressView_TextChanged" MouseEnter="AdressView_MouseEnter" Name="AdressView" Background="Transparent" TextWrapping="NoWrap" UseLayoutRounding="True" Margin="9,6,0,7" FontSize="13" BorderBrush="#00ABADB3" Padding="0,-2,0,0" SelectionBrush="#FFA1A1A1" Foreground="#FF414141"/>
+
+                </Grid>
+
+                <Grid HorizontalAlignment="Left" Width="357" Margin="-148,0,0,0">
+                    <Rectangle HorizontalAlignment="Left" Height="25" Margin="267,9,0,9" Fill="White" Width="25" RadiusX="6.14" RadiusY="6.14"/>
+                    <Rectangle HorizontalAlignment="Left" Height="25" Margin="298,9,0,9" Fill="White" Width="25" RadiusX="6.14" RadiusY="6.14"/>
+                    <Rectangle HorizontalAlignment="Left" Height="25" Margin="329,9,0,9" Fill="White" Width="25" RadiusX="6.14" RadiusY="6.14"/>
+
+                    <Button Click="Forward_Click" x:Name="Foward" Content="▶" HorizontalAlignment="Left" Height="25" Margin="329,9,0,9" Background="Transparent" BorderBrush="Transparent" Width="25" Foreground="#ff494949"/>
+                    <Button Click="Back_Click" x:Name="Back" Content="◀" HorizontalAlignment="Left" Height="25" Margin="297,9,0,9" Background="Transparent" BorderBrush="Transparent" Width="25" Foreground="#ff494949"/>
+                    <Button Click="Recharge_Click" x:Name="Recharge" Content="⟳" HorizontalAlignment="Left" Height="25" Margin="267,9,0,9" Background="Transparent" BorderBrush="Transparent" Width="25" Foreground="#FF494949"/>
+
+
+                </Grid>
+
+                <Rectangle Margin="1100,8,795,8" Width="34" RadiusX="5.74" RadiusY="5.74" Fill="White"/>
+                <Button Content="Go" Margin="1100,0,795,0" VerticalAlignment="Center" Click="GoSearch" Height="27" Width="34" Background="#00DDDDDD" BorderBrush="Transparent" Foreground="#FF5B5B5B"/>
+
+
+            </Grid>
+
+        </Grid>
+
+        <Wpf:WebView2 Name="WebView" Margin="0,84,0,0"/>
+
+    </Grid>
+</Window>
