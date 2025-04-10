@@ -45,7 +45,7 @@
 
                     <Rectangle HorizontalAlignment="Stretch" Name="AdressBackPanel" Stroke="Transparent" Fill="White" RadiusX="8.44" RadiusY="8.44" Margin="0,3,0,3"/>
                     <TextBlock x:Name="httpBlock" HorizontalAlignment="Left" Height="20" Margin="11,0,0,0" TextWrapping="Wrap" Text="https://" VerticalAlignment="Center" Width="97" Foreground="#FF414141" Padding="0,1,0,0"/>
-                    <TextBox Text="" TextChanged="AdressView_TextChanged" MouseEnter="AdressView_MouseEnter" Name="AdressView" Background="Transparent" TextWrapping="NoWrap" UseLayoutRounding="True" Margin="9,6,0,7" FontSize="13" BorderBrush="#00ABADB3" Padding="0,-2,0,0" SelectionBrush="#FFA1A1A1" Foreground="#FF414141"/>
+                    <TextBox Text="" PreviewKeyDown="AdressView_PreviewKeyDown" TextChanged="AdressView_TextChanged" MouseEnter="AdressView_MouseEnter" Name="AdressView" Background="Transparent" TextWrapping="NoWrap" UseLayoutRounding="True" Margin="9,6,0,7" FontSize="13" BorderBrush="#00ABADB3" Padding="0,-2,0,0" SelectionBrush="#FFA1A1A1" Foreground="#FF414141"/>
 
                 </Grid>
 
@@ -63,6 +63,8 @@
 
                 <Rectangle Margin="1100,8,795,8" Width="34" RadiusX="5.74" RadiusY="5.74" Fill="White"/>
                 <Button Content="Go" Margin="1100,0,795,0" VerticalAlignment="Center" Click="GoSearch" Height="27" Width="34" Background="#00DDDDDD" BorderBrush="Transparent" Foreground="#FF5B5B5B"/>
+                <ComboBox Name="searchOptions" HorizontalAlignment="Left" Margin="1139,8,0,8" Background="White" Width="28" Height="27" RenderTransformOrigin="0.5,0.5">
+                </ComboBox>
 
 
             </Grid>
