@@ -22,73 +22,6 @@ namespace Apex;
 ///
 
 //esta classe captura eventos do teclado - this class get the keyboard events
-public class GlobalKeyboardHook
-{
-    [DllImport("user32.dll")]
-    private static extern IntPtr SetWindowsHookEx(int idHook, KeyboardProc lpfn, IntPtr hMod, uint dwThreadId);
-
-    [DllImport("user32.dll")]
-    private static extern bool UnhookWindowsHookEx(IntPtr hhk);
-
-    [DllImport("user32.dll")]
-    private static extern IntPtr CallNextHookEx(IntPtr hhk, int nCode, IntPtr wParam, IntPtr lParam);
-
-    [DllImport("kernel32.dll")]
-    private static extern IntPtr GetModuleHandle(string lpModuleName);
-
-    private const int WH_KEYBOARD_LL = 13;
-    private const int WM_KEYDOWN = 0x0100;
-
-    private delegate IntPtr KeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
-
-    private KeyboardProc _proc;
-    private IntPtr _hookID = IntPtr.Zero;
-
-    public event EventHandler<KeyPressedEventArgs> KeyPressed;
-
-    public GlobalKeyboardHook()
-    {
-        _proc = HookCallback;
-        _hookID = SetHook(_proc);
-    }
-
-    private IntPtr SetHook(KeyboardProc proc)
-    {
-        using (var curProcess = System.Diagnostics.Process.GetCurrentProcess())
-        using (var curModule = curProcess.MainModule)
-        {
-            return SetWindowsHookEx(WH_KEYBOARD_LL, proc, GetModuleHandle(curModule.ModuleName), 0);
-        }
-    }
-
-    private IntPtr HookCallback(int nCode, IntPtr wParam, IntPtr lParam)
-    {
-        if (nCode >= 0 && wParam == (IntPtr)WM_KEYDOWN)
-        {
-            int vkCode = Marshal.ReadInt32(lParam);
-            Key key = KeyInterop.KeyFromVirtualKey(vkCode);
-
-            KeyPressed?.Invoke(this, new KeyPressedEventArgs(key));
-        }
-        return CallNextHookEx(_hookID, nCode, wParam, lParam);
-    }
-
-    public void Dispose()
-    {
-        UnhookWindowsHookEx(_hookID);
-    }
-}
-
-//negocio do getter e setter - getter and setter stuff
-public class KeyPressedEventArgs : EventArgs
-{
-    public Key Key { get; }
-
-    public KeyPressedEventArgs(Key key)
-    {
-        Key = key;
-    }
-}
 
 //classe da janela principal - the main window class
 public partial class MainWindow : Window, INotifyPropertyChanged
@@ -96,6 +29,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     private double _posL;
     private double _posT;
     private double _buttonL;
+    private string searchTool;
 
     public double PosL
     {
@@ -120,6 +54,10 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         _buttonL = 10;
         InitializeComponent();
         InitializeAsync();
+        searchOptions.Items.Add("Google");
+        searchOptions.Items.Add("DuckDuckGo");
+        searchOptions.Items.Add("Yandex");
+        searchOptions.SelectedItem = "Google";
     }
 
     async void InitializeAsync()
@@ -169,28 +107,35 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         search();
     }
 
-    private void search()
+    private async void search()
     {
-        try
+        if (searchOptions.SelectedItem == "Google")
         {
-            WebView.Source = new Uri(AdressView.Text);
-        }
-        catch (UriFormatException)
-        {
+            MessageBox.Show("Google selecionado");
             try
             {
-                WebView.Source = new Uri("https://www.google.com/search/" + AdressView.Text);
+                WebView.Source = new Uri(AdressView.Text);
             }
             catch (UriFormatException)
             {
+                try
+                {
+                    WebView.Source = new Uri("https://www.google.com/search/" + AdressView.Text);
+                }
+                catch (UriFormatException)
+                {
 
+                }
             }
+        }
+        else if (searchOptions.SelectedItem == "DuckDuckGo")
+        {
+            MessageBox.Show("DuckDuckGo selecionado");
         }
     }
 
     private async void AdressView_TextChanged(object sender, TextChangedEventArgs e)
     {
-        var hook0 = new GlobalKeyboardHook();
         //ver depois se dá para adicionar o evento das teclas e fazer com que os leitores de tela avisem
 
         if(AdressView.Text == "")
@@ -199,14 +144,19 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         }
         else
         {
-            hook0.KeyPressed += (sender, e) =>
-            {
-                if (e.Key == Key.Enter)
-                {
-                    search();
-                }
-            };
             httpBlock.Text = "";
+        }
+    }
+
+    private void AdressView_PreviewKeyDown(object sender, KeyEventArgs e)
+    {
+        if(e.Key == Key.Enter)
+        {
+            search();
+        }
+        else if (e.Key == Key.Tab)
+        {
+            AdressView.Text = "https://";
         }
     }
 
