@@ -13,6 +13,7 @@ using System.Windows.Shapes;
 using Microsoft.Web.WebView2.Core;
 using Microsoft.Web.WebView2.WinForms;
 using Microsoft.Web.WebView2.Wpf;
+using WebView2 = Microsoft.Web.WebView2.WinForms.WebView2;
 
 namespace Apex;
 
@@ -26,10 +27,13 @@ namespace Apex;
 //classe da janela principal - the main window class
 public partial class MainWindow : Window, INotifyPropertyChanged
 {
-    private double _posL;
-    private double _posT;
-    private double _buttonL;
+    private double _posL;//margem - left
+    private double _posT;//margem - top
+    private double _buttonL;//margem do botão
     private string searchTool;
+
+    private List<Rectangle> listOfPagesRects = new List<Rectangle>();
+    public List<WebView2> listOfPages = new List<WebView2>();
 
     public double PosL
     {
@@ -38,6 +42,16 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         {
             _posL = value;
             OnPropertyChanged(nameof(PosL));
+        }
+    }
+
+    public double PosT
+    {
+        get => _posT;
+        set
+        {
+            _posT = value;
+            OnPropertyChanged(nameof(PosT));
         }
     }
 
@@ -111,6 +125,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     {
         if (searchOptions.SelectedItem == "Google")
         {
+            searchTool = "Google";
             MessageBox.Show("Google selecionado");
             try
             {
@@ -131,6 +146,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         else if (searchOptions.SelectedItem == "DuckDuckGo")
         {
             MessageBox.Show("DuckDuckGo selecionado");
+
         }
     }
 
