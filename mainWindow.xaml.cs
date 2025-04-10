@@ -68,10 +68,22 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         _buttonL = 10;
         InitializeComponent();
         InitializeAsync();
+        InitializeWebView2();
         searchOptions.Items.Add("Google");
         searchOptions.Items.Add("DuckDuckGo");
         searchOptions.Items.Add("Yandex");
         searchOptions.SelectedItem = "Google";
+    }
+
+    private async void InitializeWebView2()
+    {
+        await WebView.EnsureCoreWebView2Async();
+
+        WebView.CoreWebView2.SourceChanged += (sender, args) =>
+        {
+            string currentURL = WebView.Source.ToString();
+            AdressView.Text = currentURL;
+        };
     }
 
     async void InitializeAsync()
@@ -108,7 +120,23 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             RadiusY = 7.49
         };
 
+        Button pageClose = new Button
+        {
+            Height = 17,
+            Width = 17,
+            Background = new SolidColorBrush(Colors.White),
+            BorderBrush = new SolidColorBrush(Colors.Black),
+            Margin = new Thickness(PosL + 163, 0, 0, 0),
+            Content = "x",
+            Padding = new Thickness(0, 0, 0, 7)
+
+        };
+
+        listOfPagesRects.Add(Page);
+
         Pages.Children.Add(Page);
+        Pages.Children.Add(pageClose);
+
         PosL += 413;
         _buttonL += 207;    
 
