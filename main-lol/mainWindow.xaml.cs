@@ -1,219 +1,73 @@
-using Microsoft.Web.WebView2.Core;
-using System;
-using System.Collections.ObjectModel;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using Microsoft.Web.WebView2.Wpf;
+using System.Windows.Data;
+using System.Windows.Documents;
 using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
+using System.Windows.Shapes;
+using Microsoft.Web.WebView2;
+using moreTestes;
+using Microsoft.Web.WebView2.Core;
+using System.Speech.Synthesis;
+using System.Diagnostics;
+using moreTestes;
 
-namespace WpfWebView2Tabs
+namespace moreTestes;
+
+/// <summary>
+/// Interaction logic for MainWindow.xaml
+/// </summary>
+/// 
+
+
+public partial class MainWindow : Window
 {
-    //getter e setter
-    public class BrowserTab
+
+    private readonly A11yService _a11yService;
+    private readonly SpeechService _speechService;
+
+    public MainWindow()
     {
-        public string Title { get; set; }
-        public string Url { get; set; }
-        public WebView2 WebView { get; set; }
+        InitializeComponent();
+        _a11yService = new A11yService();
+        _speechService = new SpeechService();
+        InitializeWebView();
     }
 
-    public partial class MainWindow : Window
+    private async void InitializeWebView()
     {
-        private string CurrentSearchEngine = "Google";
-        public ObservableCollection<BrowserTab> Tabs { get; set; } = new ObservableCollection<BrowserTab>();
-        private BrowserTab _currentTab;
-
-        public MainWindow()
+        try
         {
-            InitializeComponent();
-            DataContext = this;
-            tabControl.ItemsSource = Tabs;
-
-            // Comando para fechar abas
-            CloseTabCommand = new RelayCommand(CloseTab);
-
-            // Adiciona a primeira aba
-            AddNewTab("Nova aba", "https://www.google.com");
-
-            ComboSearchEngine.Items.Add("Google");
-            ComboSearchEngine.Items.Add("DuckDuckgo");
-            ComboSearchEngine.Items.Add("Yandex");
-        }
-
-        public RelayCommand CloseTabCommand { get; set; }
-
-        private async void AddNewTab(string title, string url)
-        {
-            var webView = new WebView2();
-            webView.CoreWebView2InitializationCompleted += WebView_CoreWebView2InitializationCompleted;
-
-            var tab = new BrowserTab
-            {
-                Title = title,
-                Url = url,
-                WebView = webView
-            };
-
-            Tabs.Add(tab);
-            tabControl.SelectedItem = tab;
-
             await webView.EnsureCoreWebView2Async();
-            webView.Source = new Uri(url);
+            webView.CoreWebView2.Navigate("https://google.com");
         }
-
-        private void WebView_CoreWebView2InitializationCompleted(object sender, CoreWebView2InitializationCompletedEventArgs e)
+        catch (Exception ex)
         {
-            if (e.IsSuccess)
-            {
-                var webView = sender as WebView2;
-                webView.CoreWebView2.DocumentTitleChanged += (s, args) =>
-                {
-                    var tab = Tabs.FirstOrDefault(t => t.WebView == webView);
-                    if (tab != null)
-                    {
-                        tab.Title = webView.CoreWebView2.DocumentTitle;
-                    }
-                };
-
-                webView.CoreWebView2.SourceChanged += (s, args) =>
-                {
-                    var tab = Tabs.FirstOrDefault(t => t.WebView == webView);
-                    if (tab != null)
-                    {
-                        tab.Url = webView.Source.ToString();
-                        if (tab == _currentTab)
-                        {
-                            addressBar.Text = tab.Url;
-                        }
-                    }
-                };
-            }
-        }
-
-        private void TabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (tabControl.SelectedItem is BrowserTab selectedTab)
-            {
-                _currentTab = selectedTab;
-
-                // Remove o WebView atual do container
-                webViewContainer.Children.Clear();
-
-                // Adiciona o WebView da aba selecionada
-                webViewContainer.Children.Add(selectedTab.WebView);
-
-                // Atualiza a barra de endereço
-                addressBar.Text = selectedTab.Url;
-            }
-        }
-
-        private void NewTab_Click(object sender, RoutedEventArgs e)
-        {
-            AddNewTab("Nova aba", "https://www.google.com");
-        }
-
-        private void search()
-        {
-            if (_currentTab != null && !string.IsNullOrWhiteSpace(addressBar.Text))
-            {
-                var url = addressBar.Text;
-                if (!url.StartsWith("http://") && !url.StartsWith("https://"))
-                {
-                    if (ComboSearchEngine.SelectedItem == "Google")
-                    {
-                        url = "https://www.google.com/search?q=" + Uri.EscapeDataString(url);
-                        CurrentSearchEngine = "Google";
-                    }
-                    else if (ComboSearchEngine.SelectedItem == "DuckDuckgo")
-                    {
-                        CurrentSearchEngine = "DuckDuckGo";
-                    }
-                }
-
-                _currentTab.WebView.Source = new Uri(url);
-                _currentTab.Url = url;
-            }
-        }
-
-        private void LoadWebViewKeyEvent(object sender, KeyEventArgs e) //função para todos os eventos de tecla do Aplicativo, ver se dá para colocar só o evento de pesquisa da tecla enter na caixa de texto AdressBar
-        {
-            if(e.Key == Key.Enter)
-            {
-                search();
-            }
-        }
-
-        private void Navigate_Click(object sender, RoutedEventArgs e)
-        {
-            search();
-        }
-
-        private void CloseTab(object parameter)
-        {
-            if (parameter is BrowserTab tabToClose && Tabs.Count > 1)
-            {
-                int index = Tabs.IndexOf(tabToClose);
-                Tabs.Remove(tabToClose);
-
-                // Se fechou a aba atual, seleciona a próxima ou anterior
-                if (tabToClose == _currentTab)
-                {
-                    if (index >= Tabs.Count) index = Tabs.Count - 1;
-                    if (index >= 0) tabControl.SelectedIndex = index;
-                }
-            }
-        }
-
-        private void Recharge_Click(object sender, RoutedEventArgs e)
-        {
-            _currentTab.WebView.Reload();
-        }
-
-        private void Foward_Click(object sender, RoutedEventArgs e)
-        {
-            if(_currentTab.WebView.CanGoForward)
-            {
-                _currentTab.WebView.GoForward();
-            }
-        }
-
-        private void Back_Click(object sender, RoutedEventArgs e)
-        {
-            if(_currentTab.WebView.CanGoBack)
-            {
-                _currentTab.WebView.GoBack();
-            }
+            MessageBox.Show($"Erro ao inicializar WebView: {ex.Message}");
         }
     }
 
-
-    public class RelayCommand : System.Windows.Input.ICommand
+    private async void BtnAnalyze_Click(object sender, RoutedEventArgs e)
     {
-        private readonly Action<object> _execute;
-        private readonly Predicate<object> _canExecute;
-
-        public RelayCommand(Action<object> execute) : this(execute, null) { 
-        }
-
-        public RelayCommand(Action<object> execute, Predicate<object> canExecute)
+        try
         {
-            _execute = execute ?? throw new ArgumentNullException(nameof(execute));
-            _canExecute = canExecute;
+            if (webView?.CoreWebView2 == null)
+            {
+                MessageBox.Show("WebView não está inicializado. Aguarde...");
+                return;
+            }
+
+            string currentUrl = webView.CoreWebView2.Source.ToString();
+            var a11yResult = await _a11yService.AnalyzeAccessibility(currentUrl);
+            _speechService.Speak($"Encontrados {a11yResult.Errors.Count} erros de acessibilidade.");
         }
-
-        public bool CanExecute(object parameter) => _canExecute?.Invoke(parameter) ?? true;
-
-        public event EventHandler CanExecuteChanged
+        catch (Exception ex)
         {
-            add
-            {
-                System.Windows.Input.CommandManager.RequerySuggested += value;
-            }
-            remove
-            {
-                System.Windows.Input.CommandManager.RequerySuggested -= value;
-            }
+            MessageBox.Show($"Erro na análise: {ex.Message}");
+            _speechService.Speak("Ocorreu um erro durante a análise.");
         }
-
-        public void Execute(object parameter) => _execute(parameter);
     }
 }
