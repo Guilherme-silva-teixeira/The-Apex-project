@@ -67,6 +67,7 @@ public partial class MainWindow : Window
         {
             MessageBox.Show($"Erro na análise: {ex.Message}");
             _speechService.Speak("Ocorreu um erro durante a análise.");
+            
         }
     }
 }
