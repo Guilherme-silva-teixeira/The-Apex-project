@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
 using Microsoft.Web.WebView2.Wpf;
+using System.Windows.Input;
 
 namespace WpfWebView2Tabs
 {
@@ -110,19 +111,40 @@ namespace WpfWebView2Tabs
             AddNewTab("Nova aba", "https://www.google.com");
         }
 
-        private void Navigate_Click(object sender, RoutedEventArgs e)
+        private void search()
         {
             if (_currentTab != null && !string.IsNullOrWhiteSpace(addressBar.Text))
             {
                 var url = addressBar.Text;
                 if (!url.StartsWith("http://") && !url.StartsWith("https://"))
                 {
-                    url = "https://" + url;
+                    if (ComboSearchEngine.SelectedItem == "Google")
+                    {
+                        url = "https://www.google.com/search?q=" + Uri.EscapeDataString(url);
+                        CurrentSearchEngine = "Google";
+                    }
+                    else if (ComboSearchEngine.SelectedItem == "DuckDuckgo")
+                    {
+                        CurrentSearchEngine = "DuckDuckGo";
+                    }
                 }
 
                 _currentTab.WebView.Source = new Uri(url);
                 _currentTab.Url = url;
             }
+        }
+
+        private void LoadWebViewKeyEvent(object sender, KeyEventArgs e) //função para todos os eventos de tecla do Aplicativo, ver se dá para colocar só o evento de pesquisa da tecla enter na caixa de texto AdressBar
+        {
+            if(e.Key == Key.Enter)
+            {
+                search();
+            }
+        }
+
+        private void Navigate_Click(object sender, RoutedEventArgs e)
+        {
+            search();
         }
 
         private void CloseTab(object parameter)
