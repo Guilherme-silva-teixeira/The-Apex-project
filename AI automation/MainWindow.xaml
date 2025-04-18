@@ -1,0 +1,51 @@
+<Window x:Class="WpfApp3.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Navegador Assistido por Gemini" Height="700" Width="1000">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="200"/>
+        </Grid.RowDefinitions>
+
+        <!-- Barra de Navegação -->
+        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="5">
+            <TextBox x:Name="txtUrl" Width="500" Margin="5" 
+                     Text="https://www.google.com" KeyDown="txtUrl_KeyDown"/>
+            <Button x:Name="btnNavigate" Content="Navegar" Width="100" 
+                    Margin="5" Click="btnNavigate_Click"/>
+        </StackPanel>
+
+        <!-- Navegador Web -->
+        <WebBrowser x:Name="wbBrowser" Grid.Row="1" Margin="5"/>
+
+        <!-- Área de Controle -->
+        <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="5">
+            <Button x:Name="btnGetElements" Content="Obter Elementos" Width="120" 
+                    Margin="5" Click="btnGetElements_Click"/>
+            <Button x:Name="btnTakeScreenshot" Content="Capturar Tela" Width="120" 
+                    Margin="5" Click="btnTakeScreenshot_Click"/>
+        </StackPanel>
+
+        <!-- Área de Chat -->
+        <Grid Grid.Row="3">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <TextBox x:Name="txtChatHistory" Grid.Row="0" Margin="5" 
+                     IsReadOnly="True" VerticalScrollBarVisibility="Auto"
+                     TextWrapping="Wrap"/>
+
+            <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="5">
+                <TextBox x:Name="txtUserInput" Width="700" Margin="5" 
+                         KeyDown="txtUserInput_KeyDown" AcceptsReturn="True"/>
+                <Button x:Name="btnSend" Content="Enviar" Width="100" 
+                        Margin="5" Click="btnSend_Click"/>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</Window>
