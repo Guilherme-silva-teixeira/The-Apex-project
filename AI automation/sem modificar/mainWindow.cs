@@ -503,7 +503,7 @@ Retorne um ARRAY JSON com este formato exato:
     public class GeminiChatbot
     {
         // Use sua própria chave da API - esta é apenas um placeholder
-        private const string ApiKey = "AIzaSyBTFsoYIX-yEXRHpXannsFRHWalroeGKE4";
+        private const string ApiKey = "nnnnnnnn";
         private const string ModelName = "gemini-2.0-flash";
         private static readonly HttpClient httpClient = new HttpClient();
         private static readonly string ApiEndpoint = $"https://generativelanguage.googleapis.com/v1beta/models/{ModelName}:generateContent?key={ApiKey}";
