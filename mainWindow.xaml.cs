@@ -7,6 +7,7 @@ using Microsoft.Web.WebView2.Wpf;
 using System.Windows.Input;
 
 namespace WpfWebView2Tabs
+    
 {
     //getter e setter
     public class BrowserTab
